@@ -1,0 +1,55 @@
+<form role="form">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-xs-12">
+                <h4>Sport: {{sport.name}}</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <select ng-model="score.firstPlayer"
+                    class="form-control"
+                    required
+                    ng-options="player.name for player in players
+                    | withoutUser:score.secondPlayer"></select>
+            </div>
+            <div class="col-xs-6">
+                <select ng-model="score.secondPlayer"
+                    class="form-control col-md-6"
+                    required
+                    ng-options="player.name for player in players
+                    | withoutUser:score.firstPlayer"></select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <h4>Score</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <input ng-model="score.firstScore"
+                    class="form-control"
+                    pattern="\d*"
+                    type="number"
+                    required>
+            </div>
+            <div class="col-xs-6">
+                <input ng-model="score.secondScore"
+                    class="form-control"
+                    pattern="\d*"
+                    type="number"
+                    required>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <br>
+                <button
+                    type="submit"
+                    ng-click="submit(score)"
+                    class="btn btn-primary btn-lg btn-block">Submit</button>
+            </div>
+        </div>
+    </div>
+</form>
