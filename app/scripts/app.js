@@ -28,13 +28,12 @@
   })();
 
   PPCtrl = (function() {
-    function PPCtrl($scope, $http, $log, $resource, $modal, ping_pong_id) {
+    function PPCtrl($scope, $http, $log, $resource, $modal) {
       this.$scope = $scope;
       this.$http = $http;
       this.$log = $log;
       this.$resource = $resource;
       this.$modal = $modal;
-      this.ping_pong_id = ping_pong_id;
       this.open = __bind(this.open, this);
       this.getSport = __bind(this.getSport, this);
       this.deleteLastSport = __bind(this.deleteLastSport, this);
@@ -66,7 +65,7 @@
         }
       };
       this.previousId = null;
-      this.$http.post("/athletable/sports/" + this.ping_pong_id + "/results.json", result).error((function(_this) {
+      this.$http.post("/athletable/sports/PING_PONG/results.json", result).error((function(_this) {
         return function(data, status) {
           _this.$log.log(data, status);
           return _this.open('lg', true);
@@ -85,7 +84,7 @@
       if (this.previousId == null) {
         return;
       }
-      this.$http["delete"]("/athletable/sports/" + this.ping_pong_id + "/results/" + this.previousId + ".json").error((function(_this) {
+      this.$http["delete"]("/athletable/sports/PING_PONG/results/" + this.previousId + ".json").error((function(_this) {
         return function(data, status) {
           _this.$log.error(data, status);
         };
@@ -98,7 +97,7 @@
 
     PPCtrl.prototype.getSport = function() {
       this.$scope.sport = this.PingPong.get({
-        sportId: this.ping_pong_id
+        sportId: 'PING_PONG'
       }, (function(_this) {
         return function() {
           _this.$scope.sport.leaderboard.forEach(function(leader) {
@@ -165,10 +164,10 @@
 
   })();
 
-  app.constant('ping_pong_id', 'c77da4728f').filter('withoutUser', function() {
+  app.filter('withoutUser', function() {
     return function(users, without) {
       return _.without(users, without);
     };
-  }).controller('ppCtrl', ['$scope', '$http', '$log', '$resource', '$modal', 'ping_pong_id', PPCtrl]);
+  }).controller('ppCtrl', ['$scope', '$http', '$log', '$resource', '$modal', PPCtrl]);
 
 }).call(this);

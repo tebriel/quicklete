@@ -13,7 +13,7 @@ class ModalInstanceCtrl
         @$modalInstance.dismiss 'cancel'
 
 class PPCtrl
-    constructor: (@$scope, @$http, @$log, @$resource, @$modal, @ping_pong_id) ->
+    constructor: (@$scope, @$http, @$log, @$resource, @$modal) ->
         @$scope.players = []
         @$scope.score = {}
         @$scope.submit = @submit
@@ -34,7 +34,7 @@ class PPCtrl
                 ]
 
         @previousId = null
-        @$http.post "/athletable/sports/#{@ping_pong_id}/results.json", result
+        @$http.post "/athletable/sports/PING_PONG/results.json", result
             .error (data, status) =>
                 @$log.log data, status
                 @open 'lg', true
@@ -51,7 +51,7 @@ class PPCtrl
     deleteLastSport: =>
         return unless @previousId?
 
-        @$http.delete "/athletable/sports/#{@ping_pong_id}/results/#{@previousId}.json"
+        @$http.delete "/athletable/sports/PING_PONG/results/#{@previousId}.json"
             .error (data, status) =>
                 @$log.error data, status
                 return
@@ -63,7 +63,7 @@ class PPCtrl
         return
 
     getSport: =>
-        @$scope.sport = @PingPong.get {sportId:@ping_pong_id}, =>
+        @$scope.sport = @PingPong.get {sportId:'PING_PONG'}, =>
             @$scope.sport.leaderboard.forEach (leader) =>
                 @$scope.players.push leader.player
 
@@ -107,8 +107,7 @@ class PPCtrl
 
         return
 
-app.constant 'ping_pong_id', 'c77da4728f'
-    .filter 'withoutUser', ->
+app.filter 'withoutUser', ->
         return (users, without) ->
             return _.without(users, without)
     .controller 'ppCtrl', [
@@ -117,6 +116,5 @@ app.constant 'ping_pong_id', 'c77da4728f'
         '$log'
         '$resource'
         '$modal'
-        'ping_pong_id'
         PPCtrl
     ]
