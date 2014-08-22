@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Quicklete</title>
+
+    <!-- Icons -->
+    <link rel='icon' href='/images/mini_icon.png' type='image/png'>
+    <link rel="apple-touch-icon" href="/images/custom_icon.png">
+
+    <!-- Bootstrap -->
+    <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendor/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body class="container" ng-app="athletable">
+    <div class="page-header">
+        <h1>Althletable!</h1>
+    </div>
+    <div ng-controller="ppCtrl">
+        <form role="form">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h4>Sport: {{sport.name}}</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <select ng-model="score.firstPlayer"
+                            class="form-control"
+                            required
+                            ng-options="player.name for player in players
+                            | withoutUser:score.secondPlayer"></select>
+                    </div>
+                    <div class="col-xs-6">
+                        <select ng-model="score.secondPlayer"
+                            class="form-control col-md-6"
+                            required
+                            ng-options="player.name for player in players
+                            | withoutUser:score.firstPlayer"></select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h4>Score</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <input ng-model="score.firstScore"
+                            class="form-control"
+                            pattern="\d*"
+                            type="number"
+                            required>
+                    </div>
+                    <div class="col-xs-6">
+                        <input ng-model="score.secondScore"
+                            class="form-control"
+                            pattern="\d*"
+                            type="number"
+                            required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <br>
+                        <button
+                            type="submit"
+                            ng-click="submit(score)"
+                            class="btn btn-primary btn-lg btn-block">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/vendor/jquery/dist/jquery.min.js"></script>
+    <script src="/vendor/underscore/underscore.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/vendor/angular/angular.min.js"></script>
+    <script src="/vendor/angular-resource/angular-resource.min.js"></script>
+    <script src="/vendor/angular-bootstrap/ui-bootstrap.min.js"></script>
+    <script src="/vendor/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="/scripts/app.js"></script>
+  </body>
+</html>
