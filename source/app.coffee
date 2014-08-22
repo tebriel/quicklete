@@ -1,4 +1,4 @@
-app = angular.module 'athletable', ['ngResource', 'ui.bootstrap']
+app = angular.module 'athletable', ['ngResource', 'ui.bootstrap', 'ngCookies']
 
 class ModalInstanceCtrl
     constructor: (@$scope, @$modalInstance, status) ->
@@ -13,7 +13,7 @@ class ModalInstanceCtrl
         @$modalInstance.dismiss 'cancel'
 
 class PPCtrl
-    constructor: (@$scope, @$http, @$log, @$resource, @$modal) ->
+    constructor: (@$scope, @$http, @$log, @$resource, @$cookies, @$modal) ->
         @$scope.players = []
         @$scope.score = {}
         @$scope.submit = @submit
@@ -32,6 +32,9 @@ class PPCtrl
                     { player_id: score.firstPlayer.id, score: score.firstScore }
                     { player_id: score.secondPlayer.id, score: score.secondScore }
                 ]
+
+        @$cookies.firstPlayerId = score.firstPlayer.id
+        @$cookies.secondPlayerId = score.secondPlayer.id
 
         @previousId = null
         @$http.post "/athletable/sports/PING_PONG/results.json", result
@@ -62,6 +65,23 @@ class PPCtrl
 
         return
 
+    setPlayers: ->
+        unless @$cookies.firstPlayerId? and @$cookies.secondPlayerId?
+            @$scope.score.firstPlayer = @$scope.players[0]
+            @$scope.score.secondPlayer = @$scope.players[1]
+            return
+
+        firstId = parseInt @$cookies.firstPlayerId
+        secondId = parseInt @$cookies.secondPlayerId
+        for player in @$scope.players
+            if player.id is firstId
+                @$scope.score.firstPlayer = player
+            else if player.id is secondId
+                @$scope.score.secondPlayer = player
+
+        return
+
+
     getSport: =>
         @$scope.sport = @PingPong.get {sportId:'PING_PONG'}, =>
             @$scope.sport.leaderboard.forEach (leader) =>
@@ -72,8 +92,8 @@ class PPCtrl
             @$scope.players = _.sortBy @$scope.players, (player) ->
                 return player.name
 
-            @$scope.score.firstPlayer = @$scope.players[0]
-            @$scope.score.secondPlayer = @$scope.players[1]
+            @setPlayers()
+
 
             return
 
@@ -115,6 +135,7 @@ app.filter 'withoutUser', ->
         '$http'
         '$log'
         '$resource'
+        '$cookies'
         '$modal'
         PPCtrl
     ]

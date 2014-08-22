@@ -2,7 +2,7 @@
   var ModalInstanceCtrl, PPCtrl, app,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  app = angular.module('athletable', ['ngResource', 'ui.bootstrap']);
+  app = angular.module('athletable', ['ngResource', 'ui.bootstrap', 'ngCookies']);
 
   ModalInstanceCtrl = (function() {
     function ModalInstanceCtrl($scope, $modalInstance, status) {
@@ -28,11 +28,12 @@
   })();
 
   PPCtrl = (function() {
-    function PPCtrl($scope, $http, $log, $resource, $modal) {
+    function PPCtrl($scope, $http, $log, $resource, $cookies, $modal) {
       this.$scope = $scope;
       this.$http = $http;
       this.$log = $log;
       this.$resource = $resource;
+      this.$cookies = $cookies;
       this.$modal = $modal;
       this.open = __bind(this.open, this);
       this.getSport = __bind(this.getSport, this);
@@ -64,6 +65,8 @@
           ]
         }
       };
+      this.$cookies.firstPlayerId = score.firstPlayer.id;
+      this.$cookies.secondPlayerId = score.secondPlayer.id;
       this.previousId = null;
       this.$http.post("/athletable/sports/PING_PONG/results.json", result).error((function(_this) {
         return function(data, status) {
@@ -95,6 +98,26 @@
       })(this));
     };
 
+    PPCtrl.prototype.setPlayers = function() {
+      var firstId, player, secondId, _i, _len, _ref;
+      if (!((this.$cookies.firstPlayerId != null) && (this.$cookies.secondPlayerId != null))) {
+        this.$scope.score.firstPlayer = this.$scope.players[0];
+        this.$scope.score.secondPlayer = this.$scope.players[1];
+        return;
+      }
+      firstId = parseInt(this.$cookies.firstPlayerId);
+      secondId = parseInt(this.$cookies.secondPlayerId);
+      _ref = this.$scope.players;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        player = _ref[_i];
+        if (player.id === firstId) {
+          this.$scope.score.firstPlayer = player;
+        } else if (player.id === secondId) {
+          this.$scope.score.secondPlayer = player;
+        }
+      }
+    };
+
     PPCtrl.prototype.getSport = function() {
       this.$scope.sport = this.PingPong.get({
         sportId: 'PING_PONG'
@@ -106,8 +129,7 @@
           _this.$scope.players = _.sortBy(_this.$scope.players, function(player) {
             return player.name;
           });
-          _this.$scope.score.firstPlayer = _this.$scope.players[0];
-          _this.$scope.score.secondPlayer = _this.$scope.players[1];
+          _this.setPlayers();
         };
       })(this));
     };
@@ -168,6 +190,6 @@
     return function(users, without) {
       return _.without(users, without);
     };
-  }).controller('ppCtrl', ['$scope', '$http', '$log', '$resource', '$modal', PPCtrl]);
+  }).controller('ppCtrl', ['$scope', '$http', '$log', '$resource', '$cookies', '$modal', PPCtrl]);
 
 }).call(this);
