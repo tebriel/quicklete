@@ -1,4 +1,4 @@
-app = angular.module 'athletable', ['ngResource', 'ui.bootstrap', 'ngCookies']
+app = angular.module 'athletable', ['ngResource', 'ui.bootstrap', 'LocalStorageModule']
 
 class ModalInstanceCtrl
     constructor: (@$scope, @$modalInstance, status) ->
@@ -13,7 +13,7 @@ class ModalInstanceCtrl
         @$modalInstance.dismiss 'cancel'
 
 class PPCtrl
-    constructor: (@$scope, @$http, @$log, @$resource, @$cookies, @$modal) ->
+    constructor: (@$scope, @$http, @$log, @$resource, @localStorageService, @$modal) ->
         @$scope.players = []
         @$scope.score = {}
         @$scope.submit = @submit
@@ -33,8 +33,8 @@ class PPCtrl
                     { player_id: score.secondPlayer.id, score: score.secondScore }
                 ]
 
-        @$cookies.firstPlayerId = score.firstPlayer.id
-        @$cookies.secondPlayerId = score.secondPlayer.id
+        @localStorageService.set 'firstPlayerId', score.firstPlayer.id
+        @localStorageService.set 'secondPlayerId', score.secondPlayer.id
 
         @previousId = null
         @$http.post "/athletable/sports/PING_PONG/results.json", result
@@ -66,13 +66,15 @@ class PPCtrl
         return
 
     setPlayers: ->
-        unless @$cookies.firstPlayerId? and @$cookies.secondPlayerId?
+        firstId = @localStorageService.get 'firstPlayerId'
+        secondId = @localStorageService.get 'secondPlayerId'
+        unless firstId? and secondId?
             @$scope.score.firstPlayer = @$scope.players[0]
             @$scope.score.secondPlayer = @$scope.players[1]
             return
 
-        firstId = parseInt @$cookies.firstPlayerId
-        secondId = parseInt @$cookies.secondPlayerId
+        firstId = parseInt firstId
+        secondId = parseInt secondId
         for player in @$scope.players
             if player.id is firstId
                 @$scope.score.firstPlayer = player
@@ -135,7 +137,7 @@ app.filter 'withoutUser', ->
         '$http'
         '$log'
         '$resource'
-        '$cookies'
+        'localStorageService'
         '$modal'
         PPCtrl
     ]

@@ -2,7 +2,7 @@
   var ModalInstanceCtrl, PPCtrl, app,
     __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
-  app = angular.module('athletable', ['ngResource', 'ui.bootstrap', 'ngCookies']);
+  app = angular.module('athletable', ['ngResource', 'ui.bootstrap', 'LocalStorageModule']);
 
   ModalInstanceCtrl = (function() {
     function ModalInstanceCtrl($scope, $modalInstance, status) {
@@ -28,12 +28,12 @@
   })();
 
   PPCtrl = (function() {
-    function PPCtrl($scope, $http, $log, $resource, $cookies, $modal) {
+    function PPCtrl($scope, $http, $log, $resource, localStorageService, $modal) {
       this.$scope = $scope;
       this.$http = $http;
       this.$log = $log;
       this.$resource = $resource;
-      this.$cookies = $cookies;
+      this.localStorageService = localStorageService;
       this.$modal = $modal;
       this.open = __bind(this.open, this);
       this.getSport = __bind(this.getSport, this);
@@ -65,8 +65,8 @@
           ]
         }
       };
-      this.$cookies.firstPlayerId = score.firstPlayer.id;
-      this.$cookies.secondPlayerId = score.secondPlayer.id;
+      this.localStorageService.set('firstPlayerId', score.firstPlayer.id);
+      this.localStorageService.set('secondPlayerId', score.secondPlayer.id);
       this.previousId = null;
       this.$http.post("/athletable/sports/PING_PONG/results.json", result).error((function(_this) {
         return function(data, status) {
@@ -100,13 +100,15 @@
 
     PPCtrl.prototype.setPlayers = function() {
       var firstId, player, secondId, _i, _len, _ref;
-      if (!((this.$cookies.firstPlayerId != null) && (this.$cookies.secondPlayerId != null))) {
+      firstId = this.localStorageService.get('firstPlayerId');
+      secondId = this.localStorageService.get('secondPlayerId');
+      if (!((firstId != null) && (secondId != null))) {
         this.$scope.score.firstPlayer = this.$scope.players[0];
         this.$scope.score.secondPlayer = this.$scope.players[1];
         return;
       }
-      firstId = parseInt(this.$cookies.firstPlayerId);
-      secondId = parseInt(this.$cookies.secondPlayerId);
+      firstId = parseInt(firstId);
+      secondId = parseInt(secondId);
       _ref = this.$scope.players;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         player = _ref[_i];
@@ -190,6 +192,6 @@
     return function(users, without) {
       return _.without(users, without);
     };
-  }).controller('ppCtrl', ['$scope', '$http', '$log', '$resource', '$cookies', '$modal', PPCtrl]);
+  }).controller('ppCtrl', ['$scope', '$http', '$log', '$resource', 'localStorageService', '$modal', PPCtrl]);
 
 }).call(this);
