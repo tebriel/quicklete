@@ -3,6 +3,10 @@ https = require 'https'
 httpProxy = require 'http-proxy'
 path = require 'path'
 
+process.on 'uncaughtException', (err) ->
+    # This is disgusting, but it's a one-off, so whatever.
+    console.log err
+
 app = express()
 proxy = httpProxy.createProxyServer()
 
