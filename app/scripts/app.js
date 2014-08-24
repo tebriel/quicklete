@@ -125,6 +125,7 @@
         sportId: 'PING_PONG'
       }, (function(_this) {
         return function() {
+          var player, _i, _len, _ref;
           _this.$scope.sport.leaderboard.forEach(function(leader) {
             _this.$scope.players.push(leader.player);
           });
@@ -132,6 +133,13 @@
             return player.name;
           });
           _this.setPlayers();
+          _ref = _this.$scope.players;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            player = _ref[_i];
+            if (!/^https:\/\//.test(player.photo_url)) {
+              player.photo_url = "/athletable" + player.photo_url;
+            }
+          }
         };
       })(this));
     };

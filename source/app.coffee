@@ -96,6 +96,9 @@ class PPCtrl
 
             @setPlayers()
 
+            for player in @$scope.players
+                unless /^https:\/\//.test player.photo_url
+                    player.photo_url = "/athletable#{player.photo_url}"
 
             return
 
