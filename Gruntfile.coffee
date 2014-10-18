@@ -26,4 +26,4 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks 'grunt-contrib-watch'
 
     # Default task(s).
-    grunt.registerTask 'default', ['coffee']
+    grunt.registerTask 'default', ['clean', 'coffee']
