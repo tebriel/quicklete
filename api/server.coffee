@@ -34,4 +34,6 @@ app.delete '/athletable/*', proxyFunc
 # serves all static files from current dir.
 app.use '/', express.static path.join(process.cwd(), 'app')
 
+console.log("Listening on #{process.env.PORT || 8090}.");
+console.log(PING_PONG_KEY, ATHLETABLE_KEY);
 app.listen process.env.PORT || 8090

@@ -19,7 +19,7 @@ class PPCtrl
         @$scope.submit = @submit
         @previousId = null
 
-        @PingPong = @$resource('/sports/:sportId.json', {sportId:'@id'})
+        @PingPong = @$resource('/athletable/sports/:sportId.json', {sportId:'@id'})
         @getSport()
 
 
@@ -37,7 +37,7 @@ class PPCtrl
         @localStorageService.set 'secondPlayerId', score.secondPlayer.id
 
         @previousId = null
-        @$http.post "/sports/PING_PONG/results.json", result
+        @$http.post "/athletable/sports/PING_PONG/results.json", result
             .error (data, status) =>
                 @$log.log data, status
                 @open 'lg', true
@@ -54,7 +54,7 @@ class PPCtrl
     deleteLastSport: =>
         return unless @previousId?
 
-        @$http.delete "/sports/PING_PONG/results/#{@previousId}.json"
+        @$http.delete "/athletable/sports/PING_PONG/results/#{@previousId}.json"
             .error (data, status) =>
                 @$log.error data, status
                 return

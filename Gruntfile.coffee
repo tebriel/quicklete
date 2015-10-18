@@ -5,16 +5,23 @@ module.exports = (grunt) ->
         pkg: grunt.file.readJSON 'package.json'
         watch:
             scripts:
-                files: ['source/**/*.coffee']
+                files: ['source/**/*.coffee', 'api/**/*.coffee']
                 tasks: ['clean', 'coffee']
 
         coffee:
-            compile:
+            scripts:
                 expand: true
                 flatten: true
                 cwd: 'source'
                 src: ['*.coffee']
                 dest: 'app/scripts'
+                ext: '.js'
+            server:
+                expand: true
+                flatten: true
+                cwd: 'api'
+                src: ['*.coffee']
+                dest: 'api/scripts'
                 ext: '.js'
 
         clean:
